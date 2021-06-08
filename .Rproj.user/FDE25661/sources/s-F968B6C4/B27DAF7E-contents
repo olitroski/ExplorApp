@@ -1,0 +1,67 @@
+# ----- Capturar errores y tratarlos en R ------------------------- #
+
+# Inputs con excepciones a tratar, esto haría que un codigo se detenga
+inputs = list(1, 2, 4, -5, 'oops', 0, 10)
+length(inputs)
+
+# Una funcion pa probar
+lefunc <- function(inputs){
+    resultado <- data.frame(valor = as.character(), log = as.numeric())
+    for(input in inputs) {
+        temp <- data.frame(valor = as.character(input), 
+                           log = as.numeric(log(input)), 
+                           stringsAsFactors = FALSE)
+        resultado <- rbind(resultado, temp)
+    }
+    return(resultado)    
+}
+
+# Al probar la función arroja un error
+lefunc(inputs)
+
+# Al probar el input valor por valor se detiene en el error
+for(input in inputs) {
+    print(paste("log of", input, "=", log(input)))
+}
+
+
+# ----- Con TRY se salta el error y nada más ---------------------- #
+for(input in inputs) {
+    try(
+        print(paste("log of", input, "=", log(input)))
+    )
+}
+
+
+# ----- Con catch se hace algo con el error ----------------------- #
+for(input in inputs) {
+    tryCatch(
+        # try
+        print(paste("log of", input, "=", log(input))),
+        
+        # Si warning
+        warning = function(w) {
+            print(paste("negative argument", input))
+            log(-input)
+        },
+        
+        # Si error
+        error = function(e) {
+            print(paste("non-numeric argument", input))
+            NaN
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

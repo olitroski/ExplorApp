@@ -1,0 +1,65 @@
+# Inputs
+inputs = list(1, 2, 4, -5, 'oops', 0, 10)
+length(inputs)
+
+# Una funcion pa probar
+lefunc <- function(inputs){
+    resultado <- data.frame(valor = as.character(), log = as.numeric())
+    for(input in inputs) {
+        temp <- data.frame(valor = as.character(input), 
+                           log = as.numeric(log(input)), 
+                           stringsAsFactors = FALSE)
+        resultado <- rbind(resultado, temp)
+    }
+    return(resultado)    
+}
+
+# Cuando se corre da error
+lefunc(inputs)
+
+# Con funciones no anda, tons hay que dejar todo el codigo en el try
+for(input in inputs) {
+    print(paste("log of", input, "=", log(input)))
+}
+
+
+# ----- Con TRY
+for(input in inputs) {
+    try(
+        print(paste("log of", input, "=", log(input)))
+    )
+}
+
+
+# ----- Con catch
+for(input in inputs) {
+    tryCatch(
+        # try
+        print(paste("log of", input, "=", log(input))),
+        
+        # Si warning
+        warning = function(w) {
+            print(paste("negative argument", input))
+            log(-input)
+        },
+        
+        # Si error
+        error = function(e) {
+            print(paste("non-numeric argument", input))
+            NaN
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
