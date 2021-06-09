@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------------- #
 # Test
 
-# Función para mirar los factores    
+# Funci?n para mirar los factores    
 # factorInfo <- function(var){
     # if (class(var) == "factor"){
         # lab_lev <- paste("level:", as.numeric(var), "|",
@@ -16,11 +16,11 @@
         # stop("La variable no es de class(factor)")
     # }
 # }
-
-names(data[['datos']])
-dmDetectFactor(data, 'Anemia')
-df <- data
-var <- 'Anemia'
+# 
+# names(data[['datos']])
+# dmDetectFactor(data, 'Anemia')
+# df <- data
+# var <- 'Anemia'
 
 dmDetectFactor <- function(df, var, cat = 10){
     # Variable
@@ -35,21 +35,21 @@ dmDetectFactor <- function(df, var, cat = 10){
         var <- as_factor(var)
         temp <- table(var)
         if (length(temp) > cat){
-            cat(paste("Categorías en al variable:", length(temp), "\n"))
-            stop(paste(varname, "(factor): excede categorías =", cat))
+            cat(paste("Categor?as en al variable:", length(temp), "\n"))
+            stop(paste(varname, "(factor): excede categor?as =", cat))
         } else {
             return(var)
         }
     }
     
     
-    # Si viene como --número--
+    # Si viene como --n?mero--
     if (class(var) == "numeric"){
         # Revisar si supera ncat
         temp <- table(var)
         if (length(temp) > cat){
-            cat(paste("Categorías en la variable:", length(temp), "\n"))
-            stop(paste(varname, "(numeric): excede categorías =", cat))
+            cat(paste("Categor?as en la variable:", length(temp), "\n"))
+            stop(paste(varname, "(numeric): excede categor?as =", cat))
         } else {
             var <- factor(var)
             return(var)
@@ -65,8 +65,8 @@ dmDetectFactor <- function(df, var, cat = 10){
             # test num de categorias
             temp <- table(var)
             if (length(temp) > cat){
-                cat(paste("Categorías en al variable:", length(temp), "\n"))
-                stop(paste(varname, "(char/num): excede categorías =", cat))
+                cat(paste("Categor?as en al variable:", length(temp), "\n"))
+                stop(paste(varname, "(char/num): excede categor?as =", cat))
             } else {
                 var <- factor(var)
                 return(var)
@@ -78,8 +78,8 @@ dmDetectFactor <- function(df, var, cat = 10){
             # Checa que no sobrepase el ncat y pasa a factor
             temp <- table(as.numeric(var))
             if (length(temp) > cat){
-                cat(paste("Categorías en al variable:", length(temp), "\n"))
-                stop(paste(varname, "(character): excede categorías =", cat))
+                cat(paste("Categor?as en al variable:", length(temp), "\n"))
+                stop(paste(varname, "(character): excede categor?as =", cat))
             } else {
                 var <- factor(var)
                 return(var)
@@ -100,8 +100,8 @@ dmDetectFactor <- function(df, var, cat = 10){
         # Producto el charAsFactor pueden superar categorias
         temp <- table(var)
         if (length(temp) > cat){
-            cat(paste("Categorías en al variable:", length(temp), "\n"))
-            stop(paste(varname, "(factor): excede categorías =", cat))
+            cat(paste("Categor?as en al variable:", length(temp), "\n"))
+            stop(paste(varname, "(factor): excede categor?as =", cat))
         } else {
             return("okvar")
         }
@@ -110,7 +110,7 @@ dmDetectFactor <- function(df, var, cat = 10){
     # Una salida por si
     } else {
         cat(paste("Variable:", varname, "\n"))
-        stop("Algo raro pasó al revisar la variable")
+        stop("Algo raro pas? al revisar la variable")
     }
 }
 

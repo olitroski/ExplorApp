@@ -5,9 +5,11 @@
 # La idea es que este sea el flujo de trabajo, se cargan las funciones y se 
 # comienza trabajar los datos. 
 
-# Cargar las librerías
-lapply(c('haven', 'markdown', 'glue', 'openxlsx', 'dplyr'), 
-       require, character.only = TRUE)
+# Setear directorio de trabajo y cargar funciones desde GitHub
+setwd('D:/GoogleDrive/R/ExplorApp')
+source('gitLoader.R')
+
+
 
 # Cargar las funciones desde GitHub
 # .... funcion ...
