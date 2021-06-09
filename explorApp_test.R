@@ -12,9 +12,10 @@ explorAppLoader()
 
 
 # Leer los datos
-datos <- dataLoader(file.path(getwd(), "/testData/excel_input.xlsx"))
-datos <- datos[['header']]
+datos <- dataLoader(file.path(getwd(), "/testData/auto13.dta"))
+datos <- datos[['datos']]
 
+# Probar variables
 
 
 
