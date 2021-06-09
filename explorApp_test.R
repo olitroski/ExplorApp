@@ -10,7 +10,7 @@ lapply(c('haven', 'markdown', 'glue', 'openxlsx', 'dplyr'),
        require, character.only = TRUE)
 
 # Cargar las funciones desde GitHub
-# .... funcion .... 
+# .... funcion ....
 
 # Leer los datos
 
