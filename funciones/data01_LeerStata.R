@@ -3,9 +3,9 @@
 # ----- Para explorApp, 08.06.2021 (en Fase2, Valdivia) Oliver.Rojas -------- #
 # --------------------------------------------------------------------------- #
 # rm(list = ls())
-library(haven)
-library(glue)
-library(markdown)
+# library(haven)
+# library(glue)
+# library(markdown)
 
 # setwd("D:/GoogleDrive/R/ExplorApp")
 # dir()
