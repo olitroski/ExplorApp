@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------------- #
 # Test
 
-# Funci?n para mirar los factores    
+# Función para mirar los factores    
 # factorInfo <- function(var){
     # if (class(var) == "factor"){
         # lab_lev <- paste("level:", as.numeric(var), "|",

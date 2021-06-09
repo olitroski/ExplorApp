@@ -8,14 +8,12 @@
 # Setear directorio de trabajo y cargar funciones desde GitHub
 setwd('D:/GoogleDrive/R/ExplorApp')
 source('gitLoader.R')
+explorAppLoader()
 
-
-
-# Cargar las funciones desde GitHub
-# .... funcion ...
 
 # Leer los datos
-
+datos <- dataLoader(file.path(getwd(), "/testData/excel_input.xlsx"))
+datos <- datos[['header']]
 
 
 

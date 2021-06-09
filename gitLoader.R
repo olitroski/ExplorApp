@@ -19,12 +19,18 @@ explorAppLoader <- function(){
     
     
     # ---- Cargar funciones -------------------------------------------
-    url <- 'https://raw.githubusercontent.com/olitroski/ExplorApp/main/funciones/'
     
     # setwd('D:/GoogleDrive/R/ExplorApp/funciones')
     # funcs <- dir()
-    # funcs <- funcs(grep("[^rR]", funcs))
+    # funcs <- funcs[grep("[^rR]", funcs)]
+    # funcs <- paste0("'", funcs, "'")
+    # funcs <- paste(funcs, collapse = ', ')
+    # funcs <- paste('funcs <- c(', funcs, ')')
+    # writeClipboard(funcs)
     
+    # Cargar fnciones
+    funcs <- c( 'data01_dataLoader.R', 'data01_LeerExcel.R', 'data01_LeerStata.R', 'data02_DetectFactor.R', 'data02_DetectMissing.R', 'data02_DetectNumeric.R', 'data02_DetectOutlier.R' )
+    url <- 'https://raw.githubusercontent.com/olitroski/ExplorApp/main/funciones/'
     for (f in funcs){
         print(paste('Cargando: ', f))
         devtools::source_url(paste0(url, f))
