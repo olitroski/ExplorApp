@@ -1,84 +1,94 @@
 # ------------------------------------------------------------------------------------- #
-# ---- Script para detectar clase de una variables segÃºn estructura ------------------- #
+# ---- Script para detectar clase de una variables según estructura ------------------- #
 # ---- by O.Rojas 12.2019 - U.Chile... fix en 06.2021 --------------------------------- #
 # ------------------------------------------------------------------------------------- #
 
 # varname <- 'foreign'; cat = 5
-dmDetectClass <- function(datos, varname, cat = 5){
-
-    # Antecedentes
-    options(warn = -1)
-    variable <- datos[[varname]]
-    tabla <- table(variable)
-    
-    # Por si estÃ¡ en blanco la variable
-    if (length(tabla) == 0){
-        tipo <- c('SinDatos', 'NA')
+dmDetectClass <- function(datos, ncat = 5){
+    # Funcion de deteccion para una variable
+    detectar <- function(datos, varname, ncat){
         
-    } else {
-        # ----- Si es factor --------------------------------------------
-        if (class(variable) == 'factor'){
+        # Antecedentes
+        options(warn = -1)
+        variable <- datos[[varname]]
+        tabla <- table(variable)
+        
+        # Por si está en blanco la variable
+        if (length(tabla) == 0){
+            tipo <- c('null', 'null')
             
-            # Puede ser factor ok
-            if (length(tabla) <= cat){
-                tipo <- c('factor', 'ok')
+        } else {
+            # ----- Si es factor --------------------------------------------
+            if (class(variable) == 'factor'){
                 
-            } else {
-                # ----- Puede ser texto
-                # test <- c('1', '2', 'a', 's', 'd', 'f', 'g', 't', 'h', 'j', 'NA', 'na', NA)
-                # N <- length(test) - sum(is.na(test))
-                # test <- as.numeric(test)
-                # Nnum <- length(test) - sum(is.na(test))
-                # Nnum / N
-
-                # Si al menos el 50% es texto -porque yo digo-
-                N <- length(variable) - sum(is.na(variable))
-                numVar <- as.numeric(as.character(variable))
-                Nnum <- length(numVar) - sum(is.na(numVar))
-                
-                if (Nnum / N <= 0.5){
-                    tipo <- c('character', 'fromFactor')
-                
-                # ----- O nÃºmero    
+                # Viene como factor y tiene pocos niveles
+                if (length(tabla) <= ncat){
+                    tipo <- c(varname, 'factor', 'ok')
+                 
+                # Si tiene mas categorias   
                 } else {
-                    tipo <- c('Numeric', 'fromFactor')
-                }
-            }
-            
-        # ----- Si es numero --------------------------------------------
-        } else if (class(variable) == 'numeric'){
-            # Si son pocas clases un factor
-            if (length(tabla) <= cat){
-                tipo <- c('factor', 'fromNumeric')
-                
-            # SerÃ­a numero
-            } else {
-                tipo <- c('numeric', 'Ok')
-            }
-            
-        # ----- Si es texto ---------------------------------------------
-        } else if (class(variable) == 'character'){
-            # podrÃ­a ser factor
-            if (length(tabla) <= cat){
-                tipo <- c('factor', 'fromCharacter')
-                
-            } else {
-                # podrÃ­a ser texto
-                N <- length(variable) - sum(is.na(variable))
-                numVar <- as.numeric(as.character(variable))
-                Nnum <- length(numVar) - sum(is.na(numVar))
-                
-                if (Nnum / N <= 0.5){
-                    tipo <- c('character', 'Ok')
+                    # % de NA en el transformado a número
+                    N <- length(variable) - sum(is.na(variable))
+                    numVar <- as.numeric(as.character(variable))
+                    Nnum <- length(numVar) - sum(is.na(numVar))
                     
-                # podrÃ­a ser numero
+                    # Si al menos el 50% es texto -porque yo digo-
+                    if (Nnum / N <= 0.5){
+                        tipo <- c(varname, 'character', 'fromFactor')
+                        
+                    # O número    
+                    } else {
+                        tipo <- c(varname, 'numeric', 'fromFactor')
+                    }
+                }
+                
+            # ----- Si es numero --------------------------------------------
+            } else if (class(variable) == 'numeric'){
+                # Si son pocas clases un factor
+                if (length(tabla) <= ncat){
+                    tipo <- c(varname, 'factor', 'fromNumeric')
+                    
+                # Sería numero
                 } else {
-                    tipo <- c('Numeric', 'fromCharacter')
+                    tipo <- c(varname, 'numeric', 'Ok')
+                }
+                
+            # ----- Si es texto ---------------------------------------------
+            } else if (class(variable) == 'character'){
+                # podría ser factor
+                if (length(tabla) <= ncat){
+                    tipo <- c(varname, 'factor', 'fromCharacter')
+                    
+                } else {
+                    # podría ser texto
+                    N <- length(variable) - sum(is.na(variable))
+                    numVar <- as.numeric(as.character(variable))
+                    Nnum <- length(numVar) - sum(is.na(numVar))
+                    
+                    if (Nnum / N <= 0.5){
+                        tipo <- c(varname, 'character', 'Ok')
+                        
+                        # podría ser numero
+                    } else {
+                        tipo <- c(varname, 'numeric', 'fromCharacter')
+                    }
                 }
             }
         }
+        
+        return(tipo)
     }
-        
-        
-    return(tipo)
+
+    # Calcular el data frame de detección
+    varClases <- list()
+    for (var in names(datos)){
+        # print(var)
+        temp <- detectar(datos, var, ncat)
+        temp <- data.frame(clase = temp[2], advise = temp[3])
+        varClases[[var]] <- temp
+    }
+    varClases <- rbindlist(varClases, idcol = "variables")
+
+    return(varClases)
 }
+

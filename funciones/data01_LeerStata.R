@@ -13,7 +13,7 @@
 # data <- DM01_leerStata(stataFile)
 
 # Data management 01 - Leer archivo de Excel
-DM01_leerStata <- function(stataFile){
+dataStata <- function(stataFile){
     
     # Intentar leer el archivo
     data <- tryCatch(

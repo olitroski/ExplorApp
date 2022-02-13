@@ -12,7 +12,7 @@
 # data <- DM01_leerExcel(excelFile)
 
 # Data management 01 - Leer archivo de Excel
-DM01_leerExcel <- function(excelFile){
+dataExcel <- function(excelFile){
     
     # Intentar leer el archivo
     data <- tryCatch(
@@ -20,7 +20,8 @@ DM01_leerExcel <- function(excelFile){
         data <- read.xlsx(excelFile, 
                           detectDates = TRUE, 
                           skipEmptyRows = TRUE, 
-                          skipEmptyCols = TRUE),
+                          skipEmptyCols = TRUE,
+                          check.names = TRUE),
         # Catch part
         warning = function(w){
             cat(paste0("> Warning al intentar leer Excel ", excelFile, '\n'))

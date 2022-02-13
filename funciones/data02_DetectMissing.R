@@ -2,46 +2,121 @@
 # ---- Script para detectar missing --------------------------------------------------- #
 # ---- by O.Rojas 12.2019 - U.Chile --------------------------------------------------- #
 # ------------------------------------------------------------------------------------- #
-
-
-dmDetectMissing <- function(var, df){
-    # Datos
-    data <- df[[var]]    
+dmDetectMissing <- function(datos, varClases){
+    # Deteccion de clases primero    
+    # Mejor que sea todo incremental
     
-    # Si es numerica o lógica solo ver NA
-    if (class(data) == "numeric" | class(data) == "logical"){
-        naCount <- sum(is.na(data))
-        naIndx <- grep(TRUE, is.na(data))
-        naPct <- naCount / length(data)
+    # Función de detección  var <- 'Anemia'
+    detectar <- function(var, datos){
         
-        naList <- list(naCount = naCount, naIndx = naIndx, naPct = naPct)
-        return(naList)
+        # Antecendentes
+        data <- datos[[var]]
+        clase <- varClases[variables == var, clase]
+        advice <- varClases[variables == var, advise]
+        
+        # Funcion que devuelve N de miss
+        nMiss <- function(data){
+            return(sum(is.na(data)))
+        }
+        
+        originalClass <- class(data)
+        
+        # ---- Numero -----------------------------------------------
+        # Si es clase número solo no puede venir de otra cosa en forma natural
+        if (clase == 'numeric'){
+            oficialStatus <- clase
+            oficialMiss <- nMiss(data)
+            
+            if (advice == 'Ok'){
+                advicedStatus <- 'Clase de variable correcto'
+                advicedMiss <- NA
+                
+            } else if (advice == 'fromFactor'){
+                advicedStatus <- 'Numérico, original Factor con muchas categorías'
+                advicedMiss <- as.numeric(data)
+                advicedMiss <- sum(is.na(advicedMiss))
+                
+            } else if (advice == 'fromCharacter'){
+                advicedStatus <- 'Numérico, original números guardados como texto'
+                advicedMiss <- as.numeric(data)
+                advicedMiss <- sum(is.na(advicedMiss))
+                
+            } else {
+                stop('clase: Numeric')
+            }
+            
+        # ---- Characeter ------------------------------------------- 
+        } else if (clase == 'character'){
+            oficialStatus <- 'Texto'
+            oficialMiss <- nMiss(data)
+            
+            if (advice == 'Ok'){
+                advicedStatus <- 'Clase de variable correcta'
+                advicedMiss <- NA
+                
+            } else if (advice == 'fromFactor'){
+                advicedStatus <- 'Texto, original Factor con muchas categorías'
+                advicedMiss <- nMiss(data)
+                
+            } else {
+                stop('clase: Character')
+            }
+            
+        # ---- Factor -----------------------------------------------  
+        } else if (clase == 'factor'){
+            oficialStatus <- 'Factor'
+            oficialMiss <- nMiss(data)
+            
+            if (advice == 'Ok'){
+                advicedStatus <- 'Clase de variable correcta'
+                advicedMiss <- NA
+                
+            } else if (advice == 'fromCharacter'){
+                advicedStatus <- 'Factor, original Texto con pocas categorías'
+                advicedMiss <- nMiss(data)
+                
+            } else if (advice == 'fromNumeric'){
+                advicedStatus <- 'Factor, original Numérico con pocas categorías'
+                advicedMiss <- nMiss(data)
+                
+            } else {
+                stop('clase: Factor')
+            }
+            
+            
+        # ---- Otros ------------------------------------------------    
+        } else if (clase == 'null'){
+            oficialStatus <- 'NoData'
+            oficialMiss <- nMiss(data)
+            advicedStatus <- 'NoData, Variable vacía'
+            advicedMiss <- nMiss(data)
+            
+            
+        # ---- error ------------------------------------------------    
+        } else {
+            stop('Algo pasó no se detectó ninguna clase')
+        }
+        
+        # Devuelve
+        resultado <- c('var' = var,
+                       'originalClass' = originalClass, 
+                       'oficialStatus' = oficialStatus, 
+                       'oficialMiss' = oficialMiss,
+                       'advicedStatus' = advicedStatus, 
+                       'advicedMiss' = advicedMiss)
+        return(resultado)
+    }   
+
+    # Tirar en toda la base de datos
+    variables <- names(datos)
     
-    # Si es string pudiera tener espacios en blanco no etiquetados como NA
-    } else if (class(data) == "character"){
-        naCount <- sum(is.na(data))
-        naIndx <- grep(TRUE, is.na(data))
-        naPct <- naCount / length(data)
-        
-        # Tirar los espacios
-        spcCount <- sum(grepl("[ ]+", data))
-        data <- sub("[ ]+", "", data)
-        data <- ifelse(data == "", NA, data)
-        naCount2 <- sum(is.na(data))
-        naIndx2 <- grep(TRUE, is.na(data))
-        naPct2 <- naCount2 / length(data)
-        
-        naList <- list(naCount = naCount, naCount2 = naCount2,
-                       naIndx = naIndx, naIndx2 = naIndx2,
-                       naPct = naPct, naPct2 = naPct2,
-                       spcCout = spcCount)
-        return(naList)
-      
-    # Alguna otra cosa  
-    } else {
-        cat("Class no permitida (detectMissing)\n")
-        stop("Algo pasó")
+    resultado <- NULL
+    for (var in variables){
+        # print(var)
+        detection <- detectar(var, datos)
+        detection <- data.frame(t(detection))
+        resultado <- rbind(resultado, detection)
     }
     
-
+    return(resultado)
 }

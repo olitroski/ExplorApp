@@ -1,12 +1,15 @@
 # ---------------------------------------------------------------- # 
 # ---- Cargar funciones desde github.com/olitroski --------------- #
 # ---------------------------------------------------------------- #
-explorAppLoader <- function(){
+explorAppLoader <- function(local = FALSE, ruta = 'D:/GoogleDrive/R/ExplorApp/funciones'){
     
     # ---- Cargar Librerias --------------------------------------------
     packlist <- c('devtools', 'openxlsx', 'haven', 'glue', 'markdown',"lubridate",
-                  'dplyr')
+                  'data.table', 'ggplot2')
     new.packages <- packlist[!(packlist %in% installed.packages()[,"Package"])]
+    
+    options(datatable.print.nrows=10)
+    options(datatable.print.trunc.cols = TRUE)
     
     # Instalar si no estan
     if (length(new.packages) > 0) {
@@ -16,31 +19,31 @@ explorAppLoader <- function(){
     for (lib in packlist) {
         eval(parse(text = paste0("library(",lib,")")))
     }
+
+    # ---- Cargar funciones de Github -----------------------------
     
-    
-    # ---- Cargar funciones -------------------------------------------
-    
-    setwd('D:/GoogleDrive/R/ExplorApp/funciones')
-    funcs <- dir()
-    funcs <- funcs[grep("[^rR]", funcs)]
-    funcs <- paste0("'", funcs, "'")
-    funcs <- paste(funcs, collapse = ', ')
-    funcs <- paste('funcs <- c(', funcs, ')')
-    writeClipboard(funcs)
-    
-    # Cargar fnciones
-    funcs <- c( 'data01_dataLoader.R', 'data01_LeerExcel.R', 'data01_LeerStata.R', 'data02_DetectClass.R', 'data02_DetectFactor.R', 'data02_DetectMissing.R', 'data02_DetectNumeric.R', 'data02_DetectOutlier.R' )
-    url <- 'https://raw.githubusercontent.com/olitroski/ExplorApp/main/funciones/'
-    for (f in funcs){
-        print(paste('Cargando: ', f))
-        devtools::source_url(paste0(url, f))
+    if (local == TRUE){
+        setwd(ruta)
+        funcs <- dir()
+        funcs <- funcs[grep("[rR$]", funcs)]
+        
+        for (f in funcs){
+            print(paste('Cargando: ', f))
+            setwd(ruta)
+            source(f)
+        }
+        
+    } else {
+        # Vector de funciones
+        setwd(ruta)
+        funcs <- dir()
+        funcs <- funcs[grep("[^rR]", funcs)]
+        
+        # Cargar fnciones
+        url <- 'https://raw.githubusercontent.com/olitroski/ExplorApp/main/funciones/'
+        for (f in funcs){
+            print(paste('Cargando: ', f))
+            devtools::source_url(paste0(url, f))
+        }
     }
-    
-    
 }
-
-
-
-
-
-

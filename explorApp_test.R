@@ -6,18 +6,21 @@
 # comienza trabajar los datos. 
 
 # Setear directorio de trabajo y cargar funciones desde GitHub
+rm(list=ls())
 setwd('D:/GoogleDrive/R/ExplorApp')
 source('gitLoader.R')
-explorAppLoader()
-
+explorAppLoader(local = TRUE)
 
 # Leer los datos
-datos <- dataLoader(file.path(getwd(), "/testData/auto13.dta"))
-datos <- datos[['datos']]
+setwd('D:/GoogleDrive/R/ExplorApp/testData')
+dataList <- dataLoader("excel_input.xlsx")
+datos <- as.data.table(datos[['datos']])
 
-# Probar variables
+# Detectar clases
+varClases <- dmDetectClass(datos)
+varMissing <- dmDetectMissing(datos, varClases)
+varTablas <- dmDetectTab(datos, varClases)
+varPlots <- dmDetectOutlier(datos, varClases)
 
 
-
-
-
+info()

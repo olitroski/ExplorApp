@@ -22,10 +22,10 @@ dataLoader <- function(dataFile){
     
     # Cargar datos
     if (extension == 'xlsx'){
-        return(DM01_leerExcel(dataFile))
+        return(dataExcel(dataFile))
         
     } else if (extension == 'dta'){
-        return(DM01_leerStata(dataFile))
+        return(dataStata(dataFile))
         
     } else {
         stop('No es posible leer archivo de datos')
